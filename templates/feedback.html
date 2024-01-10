@@ -1,0 +1,106 @@
+{% extends 'base.html' %} {% block title %} Easy Feedback {% endblock %} {%
+block content %}
+<div class="bg-primary-subtle">
+  <nav class="navbar navbar-expand-lg container">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/"
+        ><strong> [ E A S Y ] Feedback</strong></a
+      >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link" href="/register">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+<div class="container pt-5">
+  <h1 class="title">Feedback</h1>
+</div>
+
+<div class="container">
+  <div class="p-3 bg-warning-light">
+    <h1 class="text-light">Explore all the feedback</h1>
+    <p class="text-warning">Viewing all feedback.</p>
+    <h5 class="text-light">Add your feedback!</h5>
+    <form action="/feedback" method="post">
+      {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+      'hidden' %}
+      <span class="text-light">{{ field.label }}</span>
+      <p class="mt-1">
+        {{ field(class_="form-control") }} {% for error in field.erros %}
+        <span class="from-text text-danger">{{ error }} </span> {% endfor %}
+      </p>
+      {% endfor %}
+      <button class="btn bg-warning text-dark" type="submit">
+        Add your feedback.
+      </button>
+    </form>
+  </div>
+  <div class="container rounded p-5 bg-info-subtle mt-5">
+    <div>
+      {% for comment in all_feedback %}
+      <div class="card m-1">
+        <div class="card-body">
+          {{feedback.title}} -
+          <span class="text-info"
+            ><strong>{{comment.user.username}}</strong></span
+          >
+          {% if session['user_id'] == comment.user_id %}
+          <form
+            action="/feedback/{{feedback.id}}"
+            method="post"
+            style="display: inline"
+          >
+            <button class="btn btn-sm bg-danger text-light">remove</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="container p-5">
+  <p class="text-light">
+    "Feedback is the compass that guides improvement. It serves as a powerful
+    instrument, offering valuable insights and perspectives that illuminate the
+    path towards progress. Whether it be in the context of personal growth,
+    professional development, or the enhancement of products and services,
+    feedback stands as an indispensable tool. Welcoming feedback fosters a
+    culture of continuous learning, adaptability, and innovation. It is not
+    merely a reflection of the present but a blueprint for a better future—a
+    collaborative dialogue that transforms challenges into opportunities and
+    paves the way for excellence."
+  </p>
+  <p><a href="/register" class="text-warning">Join Us On Easy Feedback!</a></p>
+</div>
+<div class="container p-3">
+  <div class="rounded bg-black shape d-inline-block mx-2 my-3">
+    <h1 class="text-light">Feedback</h1>
+  </div>
+  <div class="rounded bg-black shape d-inline-block mx-2 my-3">
+    <h1 class="text-light">That</h1>
+  </div>
+  <div class="rounded bg-black shape d-inline-block mx-2 my-3">
+    <h1 class="text-light">Shapes</h1>
+  </div>
+  <div class="rounded bg-black shape d-inline-block mx-2 my-3">
+    <h1 class="text-light">Products</h1>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+.title {
+  font-size: 125px;
+  color: aqua;
+}
+
+.shape {
+  width: 280px;
+  height: 180px;
+  text-align: center;
+  align-items: center;
+}

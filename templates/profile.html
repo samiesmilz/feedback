@@ -1,0 +1,99 @@
+{% extends 'base.html' %} {% block title %} Easy Feedback {% endblock %} {%
+block content %}
+<div class="bg-primary-subtle">
+  <nav class="navbar navbar-expand-lg container">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/"
+        ><strong> [ E A S Y ] Feedback</strong></a
+      >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link" href="/register">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+<div class="container p-3">
+  <h1 class="display text-info">{{user.first_name}}'s Profile.</h1>
+</div>
+<div class="container p-3 pt-2">
+  <div class="card" style="width: 24rem">
+    <div class="card-body">
+      <h5 class="card-title">@{{user.username}}</h5>
+      <p class="card-text">Manage your profile on easy feedback.</p>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">{{user.first_name}}</li>
+      <li class="list-group-item">{{user.last_name}}</li>
+      <li class="list-group-item">{{user.email}}</li>
+    </ul>
+    <div class="card-body">
+      <a href="/users/{{user.username}}/edit" class="card-link">Edit profile</a>
+      <a href="/users/{{user.username}}/delete" class="card-link"
+        >Delete account</a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="p-3">
+    <h5 class="text-light">Add your feedback!</h5>
+  </div>
+  <div class="p-3 rounded bg-info-subtle">
+    <form action="/feedback/{{user.username}}" method="post">
+      {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+      'hidden' %}
+      <span class="text-dark">{{ field.label }}</span>
+      <p class="mt-1">
+        {{ field(class_="form-control") }} {% for error in field.erros %}
+        <span class="from-text text-danger">{{ error }} </span> {% endfor %}
+      </p>
+      {% endfor %}
+      <button class="btn bg-warning text-dark" type="submit">
+        Add feedback.
+      </button>
+    </form>
+  </div>
+  <div class="container rounded p-5 bg-info-subtle mt-5">
+    <h1 class="text-dark">Explore all your feedback</h1>
+    <p class="text-black">Viewing all feedback.</p>
+    <div>
+      {% for comment in feedback %}
+      <div class="card m-1">
+        <div class="card-body">
+          {{feedback.title}} -
+          <span class="text-info"
+            ><strong>{{comment.user.username}}</strong></span
+          >
+          {% if session['user_id'] == comment.user_id %}
+          <form
+            action="/feedback/{{feedback.id}}"
+            method="post"
+            style="display: inline"
+          >
+            <button class="btn btn-sm bg-danger text-light">remove</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
