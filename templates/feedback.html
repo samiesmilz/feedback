@@ -19,6 +19,7 @@ block content %}
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
+          <a class="nav-link" href="/users/{{session['username']}}">Profile</a>
           <a class="nav-link" href="/logout">Logout</a>
           <a class="nav-link" href="/register">Sign up</a>
         </div>
@@ -31,45 +32,50 @@ block content %}
 </div>
 
 <div class="container">
-  <div class="p-3 bg-warning-light">
-    <h1 class="text-light">Explore all the feedback</h1>
-    <p class="text-warning">Viewing all feedback.</p>
+  <div class="p-3">
     <h5 class="text-light">Add your feedback!</h5>
+  </div>
+  <div class="p-5 rounded bg-info-subtle">
     <form action="/feedback" method="post">
       {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
       'hidden' %}
-      <span class="text-light">{{ field.label }}</span>
+      <span class="text-dark">{{ field.label }}</span>
       <p class="mt-1">
         {{ field(class_="form-control") }} {% for error in field.erros %}
         <span class="from-text text-danger">{{ error }} </span> {% endfor %}
       </p>
       {% endfor %}
       <button class="btn bg-warning text-dark" type="submit">
-        Add your feedback.
+        Add feedback.
       </button>
     </form>
   </div>
   <div class="container rounded p-5 bg-info-subtle mt-5">
+    <h1 class="text-dark">Explore all feedback</h1>
+    <p class="text-black">Viewing all feedback.</p>
     <div>
-      {% for comment in all_feedback %}
+      {% for comment in feedback %}
       <div class="card m-1">
         <div class="card-body">
-          {{feedback.title}} -
-          <span class="text-info"
-            ><strong>{{comment.user.username}}</strong></span
-          >
-          {% if session['user_id'] == comment.user_id %}
-          <form
-            action="/feedback/{{feedback.id}}"
-            method="post"
-            style="display: inline"
-          >
-            <button class="btn btn-sm bg-danger text-light">remove</button>
-          </form>
-          {% endif %}
+          <div class="p-3 pb-1">
+            {{ comment.title }} -
+            <span class="text-info"
+              ><strong>{{ comment.user.username }}</strong></span
+            >
+            {% if session['username'] == comment.username %}
+            <a
+              class="text-warning-subtle"
+              href="/users/{{session['username']}}"
+            >
+              <span class="text-warning">*</span>
+            </a>
+            {% endif %}
+          </div>
+          <div class="rounded bg-warning-subtle p-3 m-1">
+            {{ comment.content }}
+          </div>
         </div>
       </div>
-
       {% endfor %}
     </div>
   </div>

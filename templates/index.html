@@ -19,7 +19,8 @@ block content %}
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          {% if 'user_id' in session %}
+          {% if 'username' in session %}
+          <a class="nav-link" href="/users/{{session['username']}}">Profile</a>
           <a class="nav-link" href="/logout">Logout</a>
           <a class="nav-link" href="/feedback">View feedback</a>
           {% else %}
@@ -35,12 +36,12 @@ block content %}
   <h1 class="title text-center text-md-left">Welcome To Easy Feedback!</h1>
 </div>
 
-<div class="container p-5">
-  <button class="btn btn-lg btn-outline-warning">
-    <a class="text-light" href="/register">Start Here</a>
+<div class="container p-5 text-center">
+  <button class="btn btn-lg btn-warning">
+    <a class="text-dark" href="/register">Start Here</a>
   </button>
-  <button class="btn btn-lg btn-outline-warning">
-    <a class="text-light" href="/feedback">View Feedback</a>
+  <button class="btn btn-lg btn-warning">
+    <a class="text-dark" href="/feedback">View Feedback</a>
   </button>
 </div>
 <div class="container p-5">

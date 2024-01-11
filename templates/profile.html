@@ -20,15 +20,19 @@ block content %}
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
           <a class="nav-link" href="/logout">Logout</a>
-          <a class="nav-link" href="/register">Sign up</a>
+          <a class="nav-link" href="/feedback">All feedback</a>
         </div>
       </div>
     </div>
   </nav>
 </div>
-<div class="container p-3">
-  <h1 class="display text-info">{{user.first_name}}'s Profile.</h1>
+<div class="container pt-5">
+  <h1 class="title">Profile</h1>
+  <span class="p-1 text-light"
+    >Hi {{ user.first_name}}, Welcome to your profile.</span
+  >
 </div>
+
 <div class="container p-3 pt-2">
   <div class="card" style="width: 24rem">
     <div class="card-body">
@@ -53,7 +57,7 @@ block content %}
   <div class="p-3">
     <h5 class="text-light">Add your feedback!</h5>
   </div>
-  <div class="p-3 rounded bg-info-subtle">
+  <div class="p-5 rounded bg-info-subtle">
     <form action="/feedback/{{user.username}}" method="post">
       {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
       'hidden' %}
@@ -72,26 +76,52 @@ block content %}
     <h1 class="text-dark">Explore all your feedback</h1>
     <p class="text-black">Viewing all feedback.</p>
     <div>
-      {% for comment in feedback %}
+      {% for comment in feedback %} {% if comment.username ==
+      session['username'] %}
       <div class="card m-1">
         <div class="card-body">
-          {{feedback.title}} -
-          <span class="text-info"
-            ><strong>{{comment.user.username}}</strong></span
-          >
-          {% if session['user_id'] == comment.user_id %}
-          <form
-            action="/feedback/{{feedback.id}}"
-            method="post"
-            style="display: inline"
-          >
-            <button class="btn btn-sm bg-danger text-light">remove</button>
-          </form>
-          {% endif %}
+          <div class="p-3 pb-1">
+            {{ comment.title }} -
+            <span class="text-info"
+              ><strong>{{ comment.user.username }}</strong></span
+            >
+
+            <form
+              action="/feedback/{{ comment.id }}/edit"
+              method="post"
+              style="display: inline"
+            >
+              <div class="d-inline">
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-outline-primary sm-button"
+                >
+                  Edit
+                </button>
+              </div>
+            </form>
+
+            <form
+              action="/feedback/{{ comment.id }}/delete"
+              method="post"
+              style="display: inline"
+            >
+              <div class="d-inline">
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-outline-danger sm-button"
+                >
+                  Delete
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="rounded bg-warning-subtle p-3 m-1">
+            {{ comment.content }}
+          </div>
         </div>
       </div>
-
-      {% endfor %}
+      {% endif %} {% endfor %}
     </div>
   </div>
 </div>
