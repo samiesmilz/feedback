@@ -1,0 +1,76 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="bg-primary-subtle">
+  <nav class="navbar navbar-expand-lg container">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/"
+        ><strong> [ E A S Y ] Feedback</strong></a
+      >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          {% if 'username' in session %}
+          <a class="nav-link" href="/users/{{session['username']}}">Profile</a>
+          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link" href="/feedback">View feedback</a>
+          {% else %}
+          <a class="nav-link" href="/login">Login</a>
+          <a class="nav-link" href="/register">Sign up</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<div class="container p-5">
+  <div class="container mt-5">
+    <h1 class="display text-light">Edit your profile.</h1>
+    <p class="lead text-light">
+      Already have an account?
+      <a href="/login"> <small class="text-info"> Login here...</small></a>
+    </p>
+    <p class="text-light">Enter your details here...</p>
+  </div>
+  <div class="container p-3">
+    <form action="/users/{{user.username}}/edit" method="post">
+      {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+      'hidden' %}
+      <span class="text-light">{{ field.label }}</span>
+      <p class="mt-1">
+        {{ field(class_="form-control") }} {% for error in field.errors %}
+        <span class="from-text text-danger">{{ error }} </span> {% endfor %}
+      </p>
+      {% endfor %}
+      <button class="btn bg-warning text-bg-warning" type="submit">
+        Update details.
+      </button>
+    </form>
+  </div>
+</div>
+<div class="container p-5">
+  <p class="text-light">
+    "Feedback is the compass that guides improvement. It serves as a powerful
+    instrument, offering valuable insights and perspectives that illuminate the
+    path towards progress. Whether it be in the context of personal growth,
+    professional development, or the enhancement of products and services,
+    feedback stands as an indispensable tool. Welcoming feedback fosters a
+    culture of continuous learning, adaptability, and innovation. It is not
+    merely a reflection of the present but a blueprint for a better future—a
+    collaborative dialogue that transforms challenges into opportunities and
+    paves the way for excellence."
+  </p>
+  <p><a href="/register" class="text-warning">Join Us On Easy Feedback!</a></p>
+</div>
+
+{% endblock %}

@@ -27,59 +27,20 @@ block content %}
   </nav>
 </div>
 <div class="container pt-5">
-  <h1 class="title">Profile</h1>
-  <span class="p-1 text-light"
-    >Hi {{ user.first_name}}, Welcome to your profile.</span
-  >
-</div>
-
-<div class="container p-3 pt-2">
-  <div class="card" style="width: 24rem">
-    <div class="card-body">
-      <h5 class="card-title">@{{user.username}}</h5>
-      <p class="card-text">Manage your profile on easy feedback.</p>
-    </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">{{user.first_name}}</li>
-      <li class="list-group-item">{{user.last_name}}</li>
-      <li class="list-group-item">{{user.email}}</li>
-    </ul>
-    <div class="card-body">
-      <form
-        action="/users/{{ user.username }}/edit"
-        method="get"
-        style="display: inline"
-      >
-        <button type="submit" class="btn btn-link card-link">
-          Edit profile
-        </button>
-      </form>
-
-      <form
-        action="/users/{{ user.username }}/delete"
-        method="post"
-        style="display: inline"
-      >
-        <button
-          type="submit"
-          class="btn btn-link card-link"
-          onclick="return confirm('Are you sure you want to delete your account?');"
-        >
-          Delete account
-        </button>
-      </form>
-    </div>
-  </div>
+  <h1 class="title">Update</h1>
+  <span class="p-1 text-light">Wanna update your feedback.</span>
 </div>
 
 <div class="container">
   <div class="p-3">
-    <h5 class="text-light">Add your feedback!</h5>
+    <h5 class="text-light">Edit your feedback!</h5>
   </div>
   <div class="p-5 rounded bg-info-subtle">
-    <form action="/feedback/{{user.username}}" method="post">
+    <form action="/feedback/{{feedcom.id}}/update" method="post">
+      <p class="text-black">Editing feedback #{{ feedcom.id }}</p>
       {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
       'hidden' %}
+
       <span class="text-dark">{{ field.label }}</span>
       <p class="mt-1">
         {{ field(class_="form-control") }} {% for error in field.erros %}
@@ -87,7 +48,7 @@ block content %}
       </p>
       {% endfor %}
       <button class="btn bg-warning text-dark" type="submit">
-        Add feedback.
+        Update feedback.
       </button>
     </form>
   </div>
@@ -100,14 +61,13 @@ block content %}
       <div class="card m-1">
         <div class="card-body">
           <div class="p-3 pb-1">
+            {{ comment.title }} -
             <span class="text-info"
-              ><strong
-                >{{ comment.title }} - {{ comment.user.username }}</strong
-              ></span
+              ><strong>{{ comment.user.username }}</strong></span
             >
 
             <form
-              action="/feedback/{{ comment.id }}/update"
+              action="/feedback/{{ comment.id }}/edit"
               method="post"
               style="display: inline"
             >

@@ -1,3 +1,5 @@
+from flask import render_template, redirect, flash, request
+from flask import flash, redirect, session
 from flask import Flask, flash, redirect, render_template, session, request
 from models import connect_db, db, User, Feedback
 from forms import UserForm, FeedbackForm, UserLoginForm
@@ -148,3 +150,91 @@ def delete_feedback(id):
     # Retrieve all feedback
     feedback = Feedback.query.filter_by(username=username).all()
     return redirect(f"/users/{username}", form=form, user=user, feedback=feedback)
+
+
+@app.route("/feedback/<int:id>/update", methods=['GET', 'POST'])
+def update_feedback(id):
+    if "username" not in session:
+        flash("Please login first!", "warning")
+        return redirect("/login")
+
+        # Retrieve all feedback by the user
+    username = session['username']
+    feedback = Feedback.query.filter_by(username=username).all()
+
+    # Retrieve the feedback to be updated
+    feedcom = Feedback.query.get_or_404(id)
+    user = User.query.get_or_404(username)
+
+    # Check if the logged-in user has the permission to update this feedback
+    if feedcom.username != session['username']:
+        flash("You don't have permission to update this feedback.", "danger")
+        return redirect(f"/users/{session['username']}")
+
+    # Create the form and populate it with the current feedback data
+    form = FeedbackForm(obj=feedcom)
+
+    if form.validate_on_submit():
+        # Form was submitted and passed validation
+        # Process the data or redirect to another page
+        feedcom.title = form.title.data
+        feedcom.content = form.content.data
+
+        db.session.commit()
+        flash("Feedback has been updated successfully!", "success")
+        return redirect(f"/users/{username}")
+
+    return render_template('update.html', user=user, form=form, feedback=feedback, feedcom=feedcom)
+
+
+@app.route("/users/<username>/edit", methods=['GET', 'POST'])
+def edit_profile(username):
+    if 'username' not in session or session['username'] != username:
+        flash("You don't have permission to edit this profile.", "danger")
+        return redirect("/login")
+
+    user = User.query.get_or_404(username)
+
+    # Create the form and populate it with the current feedback data
+    form = UserForm(obj=user)
+
+    if request.method == 'POST':
+        # Update the user's profile details
+        user.first_name = request.form.get('first_name')
+        user.last_name = request.form.get('last_name')
+        user.email = request.form.get('email')
+
+        db.session.commit()
+        flash("Your profile details have been updated successfully.", "success")
+        return redirect(f"/users/{username}")
+
+    # Render the edit profile details page
+    return render_template('edit_profile.html', user=user, form=form)
+
+
+@app.route("/users/<username>/delete", methods=['GET', 'POST'])
+def delete_user(username):
+    if 'username' not in session or session['username'] != username:
+        flash("You don't have permission to delete this user.", "danger")
+        return redirect("/login")
+
+    user = User.query.get_or_404(username)
+
+    if request.method == 'POST':
+        # Retrieve and delete associated feedback
+        feedback_to_delete = Feedback.query.filter_by(username=username).all()
+        for feedback in feedback_to_delete:
+            db.session.delete(feedback)
+
+        # Perform the actual deletion of the user
+        db.session.delete(user)
+        db.session.commit()
+
+        # Clear the session and redirect to the homepage
+        session.clear()
+        flash(
+            "Your account and associated feedback have been deleted successfully.", "info")
+        return redirect("/")
+
+    # Render a confirmation page for deleting the user
+    return render_template('index.html')
